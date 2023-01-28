@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useContext } from "react";
+import { Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Exchanges from "./pages/Exchanges";
+import Sidebar from "./components/Sidebar";
+import selectedCurrencyContext from "./store/selectedCurrencyContext";
+import currencyListContext from "./store/currencyListContext";
+import "./Style/styles.scss";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const selectedCurrencyCTX = useContext(
+		selectedCurrencyContext
+	);
+	const currencyListCTX = useContext(
+		currencyListContext
+	);
+
+	useEffect(() => {
+		currencyListCTX.getCurrencyList();
+		currencyListCTX.getExchanges();
+		selectedCurrencyCTX.getHistory("bitcoin");
+	}, []);
+	return (
+		<div className="App">
+			<Sidebar />
+			<Routes>
+				<Route
+					path="/"
+					element={<Dashboard />}
+				/>
+				<Route
+					path="/exchanges"
+					element={<Exchanges />}
+				/>
+			</Routes>
+		</div>
+	);
 }
 
 export default App;
